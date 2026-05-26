@@ -1723,6 +1723,10 @@ textarea {
     backdrop-filter: blur(18px);
   }
 
+  body.login-active .mobile-tabbar {
+    display: none !important;
+  }
+
   .mobile-tab {
     min-width: 0;
     min-height: 54px;
