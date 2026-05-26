@@ -181,6 +181,7 @@ function setView(view) {
   state.activeView = view;
   document.querySelectorAll(".view").forEach((item) => item.classList.toggle("active", item.id === view));
   document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("active", item.dataset.view === view));
+  document.querySelectorAll(".mobile-tab").forEach((item) => item.classList.toggle("active", item.dataset.view === view));
   document.querySelector("#page-title").textContent = titles[view];
   updateQuickDock(view);
   updateModuleTabs(view);
@@ -194,7 +195,7 @@ function updateModuleTabs(view = state.activeView) {
   const buttons = [...tabs.querySelectorAll(".module-tab")];
   const active = buttons.find((button) => button.dataset.view === view) || buttons[0];
   buttons.forEach((button) => button.classList.toggle("active", button === active));
-  tabs.style.setProperty("--module-left", `${active.offsetLeft}px`);
+  tabs.style.setProperty("--module-left", `${active.offsetLeft - tabs.scrollLeft}px`);
   tabs.style.setProperty("--module-width", `${active.offsetWidth}px`);
   tabs.style.setProperty("--module-color", moduleThemes[view] || moduleThemes.dashboard);
 }
@@ -206,7 +207,7 @@ function updateQuickDock(view = state.activeView) {
   const buttons = [...dock.querySelectorAll(".dock-btn")];
   const active = buttons.find((button) => button.dataset.view === view) || buttons[0];
   buttons.forEach((button) => button.classList.toggle("active", button === active));
-  dock.style.setProperty("--dock-active-left", `${active.offsetLeft}px`);
+  dock.style.setProperty("--dock-active-left", `${active.offsetLeft - dock.scrollLeft}px`);
   dock.style.setProperty("--dock-active-width", `${active.offsetWidth}px`);
 }
 
@@ -524,6 +525,12 @@ function togglePassword() {
   const visible = input.type === "text";
   input.type = visible ? "password" : "text";
   document.querySelector("#toggle-password").textContent = visible ? "👁" : "×";
+}
+
+function syncResponsiveSidebar() {
+  if (window.innerWidth <= 1100) {
+    document.querySelector(".app-shell").classList.remove("sidebar-collapsed");
+  }
 }
 
 function openOrderModal(clientName = "") {
@@ -858,6 +865,10 @@ document.querySelectorAll(".module-tab").forEach((button) => {
   button.addEventListener("click", () => setView(button.dataset.view));
 });
 
+document.querySelectorAll(".mobile-tab").forEach((button) => {
+  button.addEventListener("click", () => setView(button.dataset.view));
+});
+
 document.querySelectorAll("[data-view-target]").forEach((button) => {
   button.addEventListener("click", () => setView(button.dataset.viewTarget));
 });
@@ -868,6 +879,7 @@ document.querySelector("#global-search").addEventListener("input", (event) => {
 });
 
 document.querySelector("#sidebar-toggle").addEventListener("click", () => {
+  if (window.innerWidth <= 1100) return;
   const shell = document.querySelector(".app-shell");
   const collapsed = shell.classList.toggle("sidebar-collapsed");
   document.querySelector("#sidebar-toggle").setAttribute("aria-label", collapsed ? "Expandir menu" : "Recolher menu");
@@ -1004,10 +1016,12 @@ document.querySelectorAll(".filter-btn").forEach((button) => {
 });
 
 render();
+syncResponsiveSidebar();
 updateFilterGlider();
 updateQuickDock();
 updateModuleTabs();
 window.addEventListener("resize", () => {
+  syncResponsiveSidebar();
   updateFilterGlider();
   updateQuickDock();
   updateModuleTabs();
