@@ -3,10 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Yubor Flow | Protótipo do Sistema</title>
+    <title>Yubor Flow | Sistema de Gestão</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Dongle:wght@400;700&family=Hanken+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css?v=20260526-2" />
   </head>
   <body class="login-active">
+    <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
     <section class="login-screen" id="login-screen" aria-label="Acesso ao sistema">
       <div class="login-visual">
         <div class="login-orbit" aria-hidden="true">
@@ -15,12 +19,12 @@
           <span></span>
         </div>
         <p class="eyebrow">Yubor Flow</p>
-        <h1>Sistema integrado de pedidos, produção e estoque</h1>
-        <p>Organize clientes, acompanhe pedidos, controle insumos e visualize a produção em uma única operação.</p>
+        <h1>Sistema integrado de pedidos, produção e financeiro</h1>
+        <p>Organize clientes, acompanhe pedidos, controle contas e visualize a produção em uma única operação.</p>
         <div class="login-highlights">
           <span>Pedidos em tempo real</span>
           <span>Romaneio digital</span>
-          <span>Controle de matéria-prima</span>
+          <span>Contas a pagar e receber</span>
         </div>
       </div>
 
@@ -67,9 +71,6 @@
             <strong>Yubor Flow</strong>
             <span>Gestão integrada</span>
           </div>
-          <button class="sidebar-toggle" id="sidebar-toggle" type="button" title="Recolher menu" aria-label="Recolher menu">
-            ‹
-          </button>
         </div>
 
         <nav class="nav-list">
@@ -85,13 +86,17 @@
             <span class="nav-icon">◉</span>
             <span>Clientes</span>
           </button>
+          <button class="nav-item" data-view="produtos" title="Produtos">
+            <span class="nav-icon">P</span>
+            <span>Produtos</span>
+          </button>
           <button class="nav-item" data-view="producao" title="Produção">
             <span class="nav-icon">▱</span>
             <span>Produção</span>
           </button>
-          <button class="nav-item" data-view="estoque" title="Estoque">
+          <button class="nav-item" data-view="estoque" title="Financeiro">
             <span class="nav-icon">▥</span>
-            <span>Estoque</span>
+            <span>Financeiro</span>
           </button>
           <button class="nav-item" data-view="expedicao" title="Expedição">
             <span class="nav-icon">↗</span>
@@ -101,13 +106,25 @@
             <span class="nav-icon">◫</span>
             <span>Relatórios</span>
           </button>
+          <button class="nav-item" data-view="configuracoes" title="Configurações">
+            <span class="nav-icon">⚙</span>
+            <span>Configurações</span>
+          </button>
         </nav>
 
-        <div class="sidebar-card">
-          <span class="card-label">Fluxo ativo</span>
-          <strong>Pedido → Produção → Expedição</strong>
-          <div class="mini-progress" aria-hidden="true">
-            <span></span><span></span><span></span><span></span>
+        <div class="sidebar-card finance-side-card">
+          <span class="card-label">Resumo financeiro</span>
+          <strong id="side-balance">R$ 0,00</strong>
+          <p id="side-finance-text">Saldo previsto das contas em aberto.</p>
+          <div class="side-finance-grid" aria-label="Resumo de contas">
+            <span>
+              <small>A receber</small>
+              <b id="side-receivable">R$ 0,00</b>
+            </span>
+            <span>
+              <small>A pagar</small>
+              <b id="side-payable">R$ 0,00</b>
+            </span>
           </div>
         </div>
 
@@ -122,21 +139,6 @@
           </div>
         </div>
 
-        <nav class="quick-dock" id="quickDock" aria-label="Atalhos do sistema">
-          <span class="dock-glider" aria-hidden="true"></span>
-          <button class="dock-btn active" data-view="pedidos" title="Pedidos" aria-label="Pedidos">
-            <span>▤</span>
-          </button>
-          <button class="dock-btn" data-view="producao" title="Produção" aria-label="Produção">
-            <span>▱</span>
-          </button>
-          <button class="dock-btn" data-view="estoque" title="Estoque" aria-label="Estoque">
-            <span>▥</span>
-          </button>
-          <button class="dock-btn" data-view="relatorios" title="Relatórios" aria-label="Relatórios">
-            <span>◫</span>
-          </button>
-        </nav>
       </aside>
 
       <main class="workspace">
@@ -148,44 +150,14 @@
           <div class="top-actions">
             <label class="search-box">
               <span>⌕</span>
-              <input id="global-search" type="search" placeholder="Buscar pedido, cliente ou produto" />
+              <input id="global-search" type="search" placeholder="Buscar pedido, cliente, produto ou conta" />
             </label>
             <button class="primary-btn" id="new-order-btn">Novo pedido</button>
-            <button class="ghost-btn" id="logout-btn">Sair</button>
+            <button class="icon-btn settings-icon-btn" data-view-target="configuracoes" title="Configurações" aria-label="Abrir configurações">
+              <span class="gear-icon">⚙</span>
+            </button>
           </div>
         </header>
-
-        <nav class="module-tabs" id="moduleTabs" aria-label="Abas principais do sistema">
-          <span class="module-tabs-bg" aria-hidden="true"></span>
-          <button class="module-tab active" data-view="dashboard" data-theme="dashboard" title="Painel">
-            <span class="module-icon">▦</span>
-            <span>Painel</span>
-          </button>
-          <button class="module-tab" data-view="pedidos" data-theme="pedidos" title="Pedidos">
-            <span class="module-icon">▤</span>
-            <span>Pedidos</span>
-          </button>
-          <button class="module-tab" data-view="clientes" data-theme="clientes" title="Clientes">
-            <span class="module-icon">◉</span>
-            <span>Clientes</span>
-          </button>
-          <button class="module-tab" data-view="producao" data-theme="producao" title="Produção">
-            <span class="module-icon">▱</span>
-            <span>Produção</span>
-          </button>
-          <button class="module-tab" data-view="estoque" data-theme="estoque" title="Estoque">
-            <span class="module-icon">▥</span>
-            <span>Estoque</span>
-          </button>
-          <button class="module-tab" data-view="expedicao" data-theme="expedicao" title="Expedição">
-            <span class="module-icon">↗</span>
-            <span>Expedição</span>
-          </button>
-          <button class="module-tab" data-view="relatorios" data-theme="relatorios" title="Relatórios">
-            <span class="module-icon">◫</span>
-            <span>Relatórios</span>
-          </button>
-        </nav>
 
         <section class="view active" id="dashboard">
           <div class="metric-grid">
@@ -200,9 +172,9 @@
               <small>ordens na fábrica</small>
             </article>
             <article class="metric warning">
-              <span>Estoque crítico</span>
+              <span>Financeiro em aberto</span>
               <strong id="metric-low-stock">0</strong>
-              <small>insumos abaixo do mínimo</small>
+              <small>a pagar e a receber</small>
             </article>
             <article class="metric success">
               <span>Faturamento previsto</span>
@@ -292,6 +264,28 @@
               </button>
             </nav>
           </div>
+          <div class="date-filter-panel">
+            <label>
+              Período
+              <select id="order-date-filter">
+                <option value="todos">Todos os pedidos</option>
+                <option value="hoje">Hoje</option>
+                <option value="semana">Próximos 7 dias</option>
+                <option value="mes">Este mês</option>
+                <option value="atrasados">Atrasados</option>
+                <option value="personalizado">Personalizado</option>
+              </select>
+            </label>
+            <label>
+              De
+              <input id="order-date-start" type="date" />
+            </label>
+            <label>
+              Até
+              <input id="order-date-end" type="date" />
+            </label>
+            <button class="ghost-btn" id="clear-date-filter" type="button">Limpar datas</button>
+          </div>
           <div class="order-grid" id="orders-grid"></div>
         </section>
 
@@ -301,8 +295,20 @@
               <h2>Clientes</h2>
               <p>Cadastro centralizado com contato, CPF/CNPJ e histórico de pedidos.</p>
             </div>
+            <button class="primary-btn" id="new-client-btn" type="button">Novo cliente</button>
           </div>
           <div class="client-grid" id="clients-grid"></div>
+        </section>
+
+        <section class="view" id="produtos">
+          <div class="section-toolbar">
+            <div>
+              <h2>Cadastro de produtos</h2>
+              <p>Produtos, materiais, preços e padrões usados nos pedidos e romaneios.</p>
+            </div>
+            <button class="primary-btn" id="new-product-btn" type="button">Novo produto</button>
+          </div>
+          <div class="product-grid" id="products-grid"></div>
         </section>
 
         <section class="view" id="producao">
@@ -318,11 +324,39 @@
         <section class="view" id="estoque">
           <div class="section-toolbar">
             <div>
-              <h2>Estoque de matéria-prima</h2>
-              <p>Controle de tinta plastisol, mantas, matrizes e reposição planejada.</p>
+              <h2>Contas a pagar e receber</h2>
+              <p>Financeiro separado por recebimentos, fornecedores, salários, contas fixas e manutenção.</p>
             </div>
-            <button class="primary-btn" id="new-stock-btn">Novo item</button>
+            <button class="primary-btn" id="new-stock-btn">Nova conta</button>
           </div>
+          <div class="finance-tabs" id="finance-tabs" aria-label="Categorias financeiras">
+            <button class="finance-tab active" data-finance-filter="todos" type="button">Todos</button>
+            <button class="finance-tab" data-finance-filter="receber" type="button">A receber</button>
+            <button class="finance-tab" data-finance-filter="fornecedores" type="button">Fornecedores</button>
+            <button class="finance-tab" data-finance-filter="salarios" type="button">Salários</button>
+            <button class="finance-tab" data-finance-filter="contas" type="button">Contas fixas</button>
+            <button class="finance-tab" data-finance-filter="manutencao" type="button">Manutenção</button>
+          </div>
+          <div class="finance-controls">
+            <label>
+              Vencimento
+              <select id="finance-date-filter">
+                <option value="todos">Todos</option>
+                <option value="vencidas">Vencidas</option>
+                <option value="semana">Próximos 7 dias</option>
+                <option value="mes">Este mês</option>
+              </select>
+            </label>
+            <label>
+              Organizar por
+              <select id="finance-sort">
+                <option value="date">Vencimento</option>
+                <option value="value">Maior valor</option>
+                <option value="status">Status</option>
+              </select>
+            </label>
+          </div>
+          <div class="finance-overview" id="finance-overview"></div>
           <div class="stock-grid" id="stock-grid"></div>
         </section>
 
@@ -343,21 +377,133 @@
               <p>Visão financeira e operacional para tomada de decisão.</p>
             </div>
           </div>
-          <div class="reports-grid">
-            <section class="panel">
-              <h2>Faturamento por mês</h2>
+
+          <section class="report-hero">
+            <div>
+              <p class="eyebrow">Relatório gerencial</p>
+              <h2>Saúde financeira e operação no mesmo painel</h2>
+              <p>Resumo para apresentar ao cliente o que está para receber, pagar, produzir e expedir.</p>
+            </div>
+            <div class="report-score">
+              <span id="report-score">0%</span>
+              <small>conclusão dos pedidos</small>
+            </div>
+          </section>
+
+          <div class="report-kpi-grid" id="report-kpis"></div>
+
+          <div class="reports-grid report-layout">
+            <section class="panel report-panel wide">
+              <div class="panel-heading">
+                <div>
+                  <h2>Faturamento por mês</h2>
+                  <p>Comparativo previsto com base nos pedidos cadastrados.</p>
+                </div>
+              </div>
               <div class="bar-chart" id="revenue-chart"></div>
             </section>
-            <section class="panel">
+
+            <section class="panel report-panel">
+              <h2>Fluxo financeiro</h2>
+              <p>Contas abertas agrupadas por entrada e saída.</p>
+              <div class="finance-bars" id="finance-bars"></div>
+            </section>
+
+            <section class="panel report-panel">
               <h2>Peças produzidas</h2>
               <div class="donut-wrap">
                 <div class="donut" id="pieces-donut"><span>0</span></div>
                 <div class="legend" id="pieces-legend"></div>
               </div>
             </section>
-            <section class="panel full">
+
+            <section class="panel report-panel full">
+              <h2>Contas em aberto</h2>
+              <div class="report-table" id="report-accounts"></div>
+            </section>
+
+            <section class="panel report-panel full">
               <h2>Resumo executivo</h2>
               <div class="executive-summary" id="executive-summary"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="configuracoes">
+          <div class="section-toolbar">
+            <div>
+              <h2>Configurações do sistema</h2>
+              <p>Preferências de acesso, suporte e aparência para cada cliente.</p>
+            </div>
+          </div>
+
+          <div class="settings-grid">
+            <section class="panel settings-panel">
+              <div>
+                <p class="eyebrow">Conta</p>
+                <h2>Acesso do usuário</h2>
+                <p>Encerrar sessão e voltar para a tela de login do protótipo.</p>
+              </div>
+              <button class="danger-btn settings-action" id="settings-logout-btn" type="button">Sair da conta</button>
+            </section>
+
+            <section class="panel settings-panel">
+              <div>
+                <p class="eyebrow">Suporte</p>
+                <h2>Entrar em contato</h2>
+                <p>Direciona o cliente para atendimento com assunto preenchido.</p>
+              </div>
+              <a class="primary-btn support-link" href="https://wa.me/5516992878404?text=Ol%C3%A1%2C%20preciso%20de%20suporte%20no%20sistema%20Yubor%20Flow.%20Pode%20me%20ajudar%3F" target="_blank" rel="noopener">Abrir suporte</a>
+            </section>
+
+            <section class="panel settings-panel full">
+              <div class="settings-head">
+                <div>
+                  <p class="eyebrow">Aparência</p>
+                  <h2>Visual do sistema</h2>
+                  <p>O cliente escolhe tema, tamanho da fonte e estilo de leitura.</p>
+                </div>
+                <button class="ghost-btn" id="reset-settings-btn" type="button">Restaurar padrão</button>
+              </div>
+
+              <div class="settings-controls">
+                <div class="setting-card">
+                  <span>Tema</span>
+                  <div class="segmented-control" data-setting-group="theme">
+                    <button class="setting-option active" type="button" data-theme-option="dark">Escuro</button>
+                    <button class="setting-option" type="button" data-theme-option="light">Claro</button>
+                  </div>
+                </div>
+
+                <div class="setting-card">
+                  <span>Tamanho da fonte</span>
+                  <div class="segmented-control" data-setting-group="font-size">
+                    <button class="setting-option" type="button" data-font-size-option="compact">Compacta</button>
+                    <button class="setting-option active" type="button" data-font-size-option="normal">Normal</button>
+                    <button class="setting-option" type="button" data-font-size-option="large">Grande</button>
+                  </div>
+                </div>
+
+                <div class="setting-card">
+                  <span>Fonte</span>
+                  <div class="segmented-control" data-setting-group="font-family">
+                    <button class="setting-option active" type="button" data-font-family-option="hanken">Hanken</button>
+                    <button class="setting-option" type="button" data-font-family-option="comfortaa">Comfortaa</button>
+                    <button class="setting-option" type="button" data-font-family-option="dongle">Dongle</button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel settings-preview full">
+              <p class="eyebrow">Prévia</p>
+              <h2>Pedido em produção</h2>
+              <p>Essa área mostra como cards, textos e botões ficam com a configuração escolhida.</p>
+              <div class="preview-row">
+                <span class="pill producao">Produção</span>
+                <strong>PED-1024 · Chaveiro em borracha 3D</strong>
+                <button class="primary-btn" type="button">Ação principal</button>
+              </div>
             </section>
           </div>
         </section>
@@ -377,13 +523,29 @@
         <span>◉</span>
         <small>Clientes</small>
       </button>
+      <button class="mobile-tab" data-view="produtos" title="Produtos">
+        <span>P</span>
+        <small>Produtos</small>
+      </button>
       <button class="mobile-tab" data-view="producao" title="Produção">
         <span>▱</span>
         <small>Produção</small>
       </button>
-      <button class="mobile-tab" data-view="estoque" title="Estoque">
+      <button class="mobile-tab" data-view="estoque" title="Financeiro">
         <span>▥</span>
-        <small>Estoque</small>
+        <small>Financeiro</small>
+      </button>
+      <button class="mobile-tab" data-view="expedicao" title="Expedição">
+        <span>↗</span>
+        <small>Expedição</small>
+      </button>
+      <button class="mobile-tab" data-view="relatorios" title="Relatórios">
+        <span>◫</span>
+        <small>Relatórios</small>
+      </button>
+      <button class="mobile-tab" data-view="configuracoes" title="Configurações">
+        <span>⚙</span>
+        <small>Config</small>
       </button>
     </nav>
 
@@ -391,15 +553,26 @@
       <form class="modal-content" id="order-form" novalidate>
         <button class="close-btn" id="cancel-order-x" type="button" aria-label="Fechar">×</button>
         <p class="eyebrow">Demonstração</p>
-        <h2>Novo pedido</h2>
+        <h2 id="order-modal-title">Novo pedido</h2>
+        <input id="form-order-id" type="hidden" />
         <div class="form-grid">
-          <label>
+          <label class="client-picker-field">
             Cliente
-            <input id="form-client" required placeholder="Ex.: Brindes Franca" />
+            <div class="input-with-action">
+              <input id="form-client" list="client-options" required placeholder="Digite ou selecione um cliente" />
+              <button class="action-btn" id="toggle-client-picker" type="button">Buscar</button>
+            </div>
+            <datalist id="client-options"></datalist>
+            <small>Digite livremente ou escolha manualmente um cliente cadastrado.</small>
           </label>
           <label>
             Produto
-            <input id="form-product" required placeholder="Ex.: Chaveiro personalizado" />
+            <div class="input-with-action">
+              <input id="form-product" list="product-options" required placeholder="Digite ou selecione um produto" />
+              <button class="action-btn" id="toggle-product-picker" type="button">Buscar</button>
+            </div>
+            <datalist id="product-options"></datalist>
+            <small>Digite algumas letras ou escolha manualmente no cadastro de produtos.</small>
           </label>
           <label>
             Quantidade
@@ -414,6 +587,8 @@
             <textarea id="form-notes" placeholder="Cores, matriz, acabamento, embalagem"></textarea>
           </label>
         </div>
+        <div class="client-picker-panel" id="client-picker-panel" hidden></div>
+        <div class="client-picker-panel" id="product-picker-panel" hidden></div>
         <div class="modal-actions">
           <button class="ghost-btn" id="cancel-order-btn" type="button">Cancelar</button>
           <button class="primary-btn" id="save-order-btn" type="submit">Salvar pedido</button>
@@ -421,41 +596,158 @@
       </form>
     </dialog>
 
-    <dialog class="modal" id="stock-modal">
-      <form class="modal-content" id="stock-form" novalidate>
-        <button class="close-btn" id="cancel-stock-x" type="button" aria-label="Fechar">×</button>
-        <p class="eyebrow">Estoque</p>
-        <h2 id="stock-modal-title">Novo item</h2>
-        <input id="stock-index" type="hidden" />
+    <dialog class="modal" id="product-modal">
+      <form class="modal-content" id="product-form" novalidate>
+        <button class="close-btn" id="cancel-product-x" type="button" aria-label="Fechar">×</button>
+        <p class="eyebrow">Produtos</p>
+        <h2 id="product-modal-title">Novo produto</h2>
+        <input id="product-index" type="hidden" />
         <div class="form-grid">
           <label>
-            Item
-            <input id="stock-item" required placeholder="Ex.: Tinta plastisol verde" />
+            Nome do produto
+            <input id="product-name" required placeholder="Ex.: Chaveiro emborrachado" />
           </label>
           <label>
             Categoria
-            <input id="stock-type" required placeholder="Ex.: Matéria-prima" />
+            <select id="product-category" required>
+              <option value="Chaveiros">Chaveiros</option>
+              <option value="Patches">Patches</option>
+              <option value="Etiquetas">Etiquetas</option>
+              <option value="Tags">Tags</option>
+              <option value="Logos">Logos</option>
+              <option value="Personalizado">Personalizado</option>
+            </select>
           </label>
           <label>
-            Quantidade atual
-            <input id="stock-current" type="number" min="0" step="1" required />
+            Preço por peça
+            <input id="product-price" type="number" min="0" step="0.01" required />
           </label>
           <label>
-            Estoque mínimo
-            <input id="stock-min" type="number" min="0" step="1" required />
+            Prazo padrão
+            <input id="product-lead" type="number" min="1" value="7" required />
           </label>
           <label>
-            Unidade
-            <input id="stock-unit" required placeholder="kg, un, m" />
+            Material / tinta
+            <input id="product-material" required placeholder="Ex.: Tinta plastisol azul" />
           </label>
           <label>
-            Reposição / observação
-            <input id="stock-arrival" required placeholder="Ex.: Reposição em 15 dias" />
+            Matriz padrão
+            <input id="product-matrix" required placeholder="Ex.: MTX-CHV-33" />
+          </label>
+          <label class="full-field">
+            Observações
+            <textarea id="product-notes" placeholder="Acabamento, embalagem, cuidados de produção"></textarea>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="ghost-btn" id="cancel-product-btn" type="button">Cancelar</button>
+          <button class="primary-btn" type="submit">Salvar produto</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="modal" id="client-modal">
+      <form class="modal-content" id="client-form" novalidate>
+        <button class="close-btn" id="cancel-client-x" type="button" aria-label="Fechar">×</button>
+        <p class="eyebrow">Clientes</p>
+        <h2 id="client-modal-title">Novo cliente</h2>
+        <input id="client-original-name" type="hidden" />
+        <div class="form-grid">
+          <label>
+            Nome / empresa
+            <input id="client-name" required placeholder="Ex.: Brindes Franca" />
+          </label>
+          <label>
+            Documento
+            <div class="input-with-action document-input">
+              <select id="client-doc-type" aria-label="Tipo de documento">
+                <option value="CNPJ">CNPJ</option>
+                <option value="CPF">CPF</option>
+              </select>
+              <input id="client-doc" placeholder="Opcional" />
+            </div>
+          </label>
+          <label>
+            Telefone
+            <input id="client-phone" required placeholder="Ex.: (16) 99999-9999" />
+          </label>
+          <label>
+            E-mail
+            <input id="client-email" type="email" placeholder="Opcional" />
+          </label>
+          <label>
+            Estado
+            <select id="client-state"></select>
+          </label>
+          <label class="client-picker-field">
+            Cidade
+            <div class="input-with-action">
+              <input id="client-city" list="city-options" placeholder="Digite ou selecione a cidade" />
+              <button class="action-btn" id="toggle-city-picker" type="button">Buscar</button>
+            </div>
+            <datalist id="city-options"></datalist>
+          </label>
+        </div>
+        <div class="client-picker-panel" id="city-picker-panel" hidden></div>
+        <div class="modal-actions">
+          <button class="ghost-btn" id="cancel-client-btn" type="button">Cancelar</button>
+          <button class="primary-btn" type="submit">Salvar cliente</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="modal" id="stock-modal">
+      <form class="modal-content" id="stock-form" novalidate>
+        <button class="close-btn" id="cancel-stock-x" type="button" aria-label="Fechar">×</button>
+        <p class="eyebrow">Financeiro</p>
+        <h2 id="stock-modal-title">Nova conta</h2>
+        <input id="stock-index" type="hidden" />
+        <div class="form-grid">
+          <label>
+            Descrição
+            <input id="stock-item" required placeholder="Ex.: Fornecedor de tinta" />
+          </label>
+          <label>
+            Tipo
+            <select id="stock-type" required>
+              <option value="Pagar">Pagar</option>
+              <option value="Receber">Receber</option>
+            </select>
+          </label>
+          <label>
+            Categoria
+            <select id="stock-category" required>
+              <option value="receber">A receber</option>
+              <option value="fornecedores">Fornecedor</option>
+              <option value="salarios">Salário</option>
+              <option value="contas">Conta fixa</option>
+              <option value="manutencao">Manutenção</option>
+            </select>
+          </label>
+          <label>
+            Valor
+            <input id="stock-current" type="number" min="0" step="0.01" required />
+          </label>
+          <label>
+            Vencimento
+            <input id="stock-min" type="date" required />
+          </label>
+          <label>
+            Status
+            <select id="stock-unit" required>
+              <option value="Aberto">Aberto</option>
+              <option value="Pago">Pago</option>
+              <option value="Recebido">Recebido</option>
+            </select>
+          </label>
+          <label>
+            Observação
+            <input id="stock-arrival" required placeholder="Ex.: parcela 1/3, boleto, pix" />
           </label>
         </div>
         <div class="modal-actions">
           <button class="ghost-btn" id="cancel-stock-btn" type="button">Cancelar</button>
-          <button class="primary-btn" type="submit">Salvar item</button>
+          <button class="primary-btn" type="submit">Salvar conta</button>
         </div>
       </form>
     </dialog>
