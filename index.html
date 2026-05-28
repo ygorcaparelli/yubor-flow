@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Yubor Flow | Sistema de Gestão</title>
+    <title>Yubor | Sistema de Gestão</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Dongle:wght@400;700&family=Hanken+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet" />
@@ -18,14 +18,9 @@
           <span></span>
           <span></span>
         </div>
-        <p class="eyebrow">Yubor Flow</p>
-        <h1>Sistema integrado de pedidos, produção e financeiro</h1>
-        <p>Organize clientes, acompanhe pedidos, controle contas e visualize a produção em uma única operação.</p>
-        <div class="login-highlights">
-          <span>Pedidos em tempo real</span>
-          <span>Romaneio digital</span>
-          <span>Contas a pagar e receber</span>
-        </div>
+        <p class="eyebrow">Sistema de gestão</p>
+        <h1>Yubor</h1>
+        <p class="login-tagline">Elevando marcas nos detalhes.</p>
       </div>
 
       <form class="login-card" id="login-form" novalidate>
@@ -68,7 +63,7 @@
         <div class="brand">
           <div class="brand-mark">Y</div>
           <div>
-            <strong>Yubor Flow</strong>
+            <strong>Yubor</strong>
             <span>Gestão integrada</span>
           </div>
         </div>
@@ -106,6 +101,10 @@
             <span class="nav-icon">◫</span>
             <span>Relatórios</span>
           </button>
+          <button class="nav-item" data-view="perfil" title="Perfil">
+            <span class="nav-icon">◎</span>
+            <span>Perfil</span>
+          </button>
           <button class="nav-item" data-view="configuracoes" title="Configurações">
             <span class="nav-icon">⚙</span>
             <span>Configurações</span>
@@ -115,7 +114,7 @@
         <div class="sidebar-card finance-side-card">
           <span class="card-label">Resumo financeiro</span>
           <strong id="side-balance">R$ 0,00</strong>
-          <p id="side-finance-text">Saldo previsto das contas em aberto.</p>
+          <p id="side-finance-text">Saldo realizado no sistema.</p>
           <div class="side-finance-grid" aria-label="Resumo de contas">
             <span>
               <small>A receber</small>
@@ -148,6 +147,10 @@
             <h1 id="page-title">Painel operacional</h1>
           </div>
           <div class="top-actions">
+            <button class="profile-button" data-view-target="perfil" type="button" title="Perfil">
+              <img id="top-profile-photo" alt="Foto do perfil" />
+              <span id="top-profile-name">Perfil</span>
+            </button>
             <label class="search-box">
               <span>⌕</span>
               <input id="global-search" type="search" placeholder="Buscar pedido, cliente, produto ou conta" />
@@ -161,25 +164,33 @@
 
         <section class="view active" id="dashboard">
           <div class="metric-grid">
-            <article class="metric">
+            <article class="metric dashboard-link-card" data-dashboard-link="pedidos" role="button" tabindex="0">
               <span>Pedidos abertos</span>
               <strong id="metric-open-orders">0</strong>
-              <small>em acompanhamento</small>
+              <small id="metric-open-orders-detail">em acompanhamento</small>
+              <p id="metric-open-orders-summary">Clique para acompanhar pedidos, editar etapas e abrir romaneios.</p>
+              <b>Ver pedidos</b>
             </article>
-            <article class="metric">
+            <article class="metric dashboard-link-card" data-dashboard-link="producao" role="button" tabindex="0">
               <span>Em produção</span>
               <strong id="metric-production">0</strong>
-              <small>ordens na fábrica</small>
+              <small id="metric-production-detail">ordens na fábrica</small>
+              <p id="metric-production-summary">Clique para ver o quadro de produção por etapa.</p>
+              <b>Ver produção</b>
             </article>
-            <article class="metric warning">
+            <article class="metric warning dashboard-link-card" data-dashboard-link="estoque" role="button" tabindex="0">
               <span>Financeiro em aberto</span>
               <strong id="metric-low-stock">0</strong>
-              <small>a pagar e a receber</small>
+              <small id="metric-finance-detail">a pagar e a receber</small>
+              <p id="metric-finance-summary">Clique para conferir vencimentos, recebimentos e contas.</p>
+              <b>Ver financeiro</b>
             </article>
-            <article class="metric success">
+            <article class="metric success dashboard-link-card" data-dashboard-link="relatorios" role="button" tabindex="0">
               <span>Faturamento previsto</span>
               <strong id="metric-revenue">R$ 0</strong>
-              <small>pedidos do mês</small>
+              <small id="metric-revenue-detail">pedidos do mês</small>
+              <p id="metric-revenue-summary">Clique para abrir relatórios e indicadores do sistema.</p>
+              <b>Ver relatórios</b>
             </article>
           </div>
 
@@ -308,6 +319,10 @@
             </div>
             <button class="primary-btn" id="new-product-btn" type="button">Novo produto</button>
           </div>
+          <div class="catalog-tabs" id="catalog-tabs">
+            <button class="catalog-tab active" data-catalog-mode="produtos" type="button">Produtos</button>
+            <button class="catalog-tab" data-catalog-mode="matrizes" type="button">Matrizes</button>
+          </div>
           <div class="product-grid" id="products-grid"></div>
         </section>
 
@@ -345,7 +360,16 @@
                 <option value="vencidas">Vencidas</option>
                 <option value="semana">Próximos 7 dias</option>
                 <option value="mes">Este mês</option>
+                <option value="personalizado">Personalizado</option>
               </select>
+            </label>
+            <label>
+              De
+              <input id="finance-date-start" type="date" />
+            </label>
+            <label>
+              Até
+              <input id="finance-date-end" type="date" />
             </label>
             <label>
               Organizar por
@@ -355,6 +379,7 @@
                 <option value="status">Status</option>
               </select>
             </label>
+            <button class="ghost-btn" id="clear-finance-date-filter" type="button">Limpar datas</button>
           </div>
           <div class="finance-overview" id="finance-overview"></div>
           <div class="stock-grid" id="stock-grid"></div>
@@ -429,20 +454,78 @@
           </div>
         </section>
 
+        <section class="view" id="perfil">
+          <div class="section-toolbar">
+            <div>
+              <h2>Perfil do usuário</h2>
+              <p>Dados visíveis no sistema, foto de perfil e contato principal.</p>
+            </div>
+          </div>
+
+          <div class="profile-page-grid">
+            <section class="panel profile-main-card">
+              <div class="profile-settings">
+                <img id="settings-profile-photo" alt="Foto do perfil" />
+                <div>
+                  <strong id="profile-preview-name">Usuário do sistema</strong>
+                  <span id="profile-preview-role">Gestor operacional</span>
+                  <label class="ghost-btn profile-upload">
+                    Escolher foto
+                    <input id="profile-photo-input" type="file" accept="image/*" />
+                  </label>
+                </div>
+              </div>
+              <form class="profile-form" id="profile-form">
+                <label>
+                  Nome
+                  <input id="profile-name" placeholder="Ex.: Ygor Caparelli" />
+                </label>
+                <label>
+                  Cargo
+                  <input id="profile-role" placeholder="Ex.: Administrador" />
+                </label>
+                <label>
+                  Empresa
+                  <input id="profile-company" placeholder="Ex.: Yubor" />
+                </label>
+                <label>
+                  WhatsApp
+                  <input id="profile-phone" placeholder="Ex.: (16) 99287-8404" />
+                </label>
+                <label class="full-field">
+                  E-mail
+                  <input id="profile-email" type="email" placeholder="Ex.: contato@empresa.com" />
+                </label>
+                <button class="primary-btn" type="submit">Salvar perfil</button>
+              </form>
+            </section>
+            <section class="panel profile-summary-card">
+              <p class="eyebrow">Resumo</p>
+              <h2 id="profile-summary-company">Yubor</h2>
+              <div class="executive-summary">
+                <div class="summary-item"><span>Usuário</span><strong id="profile-summary-name">Usuário do sistema</strong></div>
+                <div class="summary-item"><span>Cargo</span><strong id="profile-summary-role">Gestor operacional</strong></div>
+                <div class="summary-item"><span>WhatsApp</span><strong id="profile-summary-phone">Não informado</strong></div>
+                <div class="summary-item"><span>E-mail</span><strong id="profile-summary-email">Não informado</strong></div>
+              </div>
+            </section>
+          </div>
+        </section>
+
         <section class="view" id="configuracoes">
           <div class="section-toolbar">
             <div>
               <h2>Configurações do sistema</h2>
-              <p>Preferências de acesso, suporte e aparência para cada cliente.</p>
+              <p>Preferências de suporte, aparência e acesso do sistema.</p>
             </div>
           </div>
 
           <div class="settings-grid">
             <section class="panel settings-panel">
               <div>
-                <p class="eyebrow">Conta</p>
+                <p class="eyebrow">Sessão</p>
                 <h2>Acesso do usuário</h2>
-                <p>Encerrar sessão e voltar para a tela de login do protótipo.</p>
+                <p>Encerrar sessão e voltar para a tela de login.</p>
               </div>
               <button class="danger-btn settings-action" id="settings-logout-btn" type="button">Sair da conta</button>
             </section>
@@ -453,7 +536,7 @@
                 <h2>Entrar em contato</h2>
                 <p>Direciona o cliente para atendimento com assunto preenchido.</p>
               </div>
-              <a class="primary-btn support-link" href="https://wa.me/5516992878404?text=Ol%C3%A1%2C%20preciso%20de%20suporte%20no%20sistema%20Yubor%20Flow.%20Pode%20me%20ajudar%3F" target="_blank" rel="noopener">Abrir suporte</a>
+              <a class="primary-btn support-link" href="https://wa.me/5516992878404?text=Ol%C3%A1%2C%20preciso%20de%20suporte%20no%20sistema%20Yubor.%20Pode%20me%20ajudar%3F" target="_blank" rel="noopener">Abrir suporte</a>
             </section>
 
             <section class="panel settings-panel full">
@@ -543,6 +626,10 @@
         <span>◫</span>
         <small>Relatórios</small>
       </button>
+      <button class="mobile-tab" data-view="perfil" title="Perfil">
+        <span>◎</span>
+        <small>Perfil</small>
+      </button>
       <button class="mobile-tab" data-view="configuracoes" title="Configurações">
         <span>⚙</span>
         <small>Config</small>
@@ -575,12 +662,34 @@
             <small>Digite algumas letras ou escolha manualmente no cadastro de produtos.</small>
           </label>
           <label>
+            Matriz
+            <div class="input-with-action">
+              <input id="form-matrix" list="matrix-options" placeholder="Selecione a matriz" />
+              <button class="action-btn" id="toggle-matrix-picker" type="button">Buscar</button>
+            </div>
+            <datalist id="matrix-options"></datalist>
+            <small>A matriz é sugerida pelo produto, mas pode ser trocada.</small>
+          </label>
+          <label>
             Quantidade
             <input id="form-quantity" type="number" min="1" value="500" required />
           </label>
           <label>
             Entrega
             <input id="form-date" type="date" required />
+          </label>
+          <label>
+            Responsável
+            <input id="form-responsible" placeholder="Ex.: Equipe comercial" />
+          </label>
+          <label>
+            Prioridade
+            <select id="form-priority">
+              <option value="Normal">Normal</option>
+              <option value="Alta">Alta</option>
+              <option value="Urgente">Urgente</option>
+              <option value="Conferência">Conferência</option>
+            </select>
           </label>
           <label class="full-field">
             Observações de produção
@@ -589,6 +698,7 @@
         </div>
         <div class="client-picker-panel" id="client-picker-panel" hidden></div>
         <div class="client-picker-panel" id="product-picker-panel" hidden></div>
+        <div class="client-picker-panel" id="matrix-picker-panel" hidden></div>
         <div class="modal-actions">
           <button class="ghost-btn" id="cancel-order-btn" type="button">Cancelar</button>
           <button class="primary-btn" id="save-order-btn" type="submit">Salvar pedido</button>
@@ -603,6 +713,21 @@
         <h2 id="product-modal-title">Novo produto</h2>
         <input id="product-index" type="hidden" />
         <div class="form-grid">
+          <div class="product-photo-field full-field">
+            <div class="product-photo-preview" id="product-photo-preview">
+              <span>Foto opcional</span>
+            </div>
+            <div>
+              <strong>Imagem do produto</strong>
+              <p>Use apenas se quiser mostrar o acabamento para o cliente.</p>
+              <label class="ghost-btn profile-upload">
+                Escolher foto
+                <input id="product-photo-input" type="file" accept="image/*" />
+              </label>
+              <button class="action-btn" id="remove-product-photo" type="button">Remover foto</button>
+              <input id="product-photo" type="hidden" />
+            </div>
+          </div>
           <label>
             Nome do produto
             <input id="product-name" required placeholder="Ex.: Chaveiro emborrachado" />
@@ -625,6 +750,20 @@
           <label>
             Prazo padrão
             <input id="product-lead" type="number" min="1" value="7" required />
+          </label>
+          <label>
+            Acabamento
+            <select id="product-finish" required>
+              <option value="Alto relevo">Alto relevo</option>
+              <option value="Baixo relevo">Baixo relevo</option>
+              <option value="Emborrachado">Emborrachado</option>
+              <option value="Resinado">Resinado</option>
+              <option value="Personalizado">Personalizado</option>
+            </select>
+          </label>
+          <label>
+            Mínimo para preço
+            <input id="product-min-quantity" type="number" min="1" value="100" required />
           </label>
           <label>
             Material / tinta
@@ -676,18 +815,42 @@
             <input id="client-email" type="email" placeholder="Opcional" />
           </label>
           <label>
+            CEP
+            <div class="input-with-action">
+              <input id="client-cep" placeholder="Ex.: 14400-000" />
+              <button class="action-btn" id="search-cep-btn" type="button">Buscar CEP</button>
+            </div>
+          </label>
+          <label>
+            Endereço
+            <input id="client-address" placeholder="Rua, avenida, estrada..." />
+          </label>
+          <label>
+            Número
+            <input id="client-number" placeholder="Ex.: 120" />
+          </label>
+          <label>
+            Bairro
+            <input id="client-district" placeholder="Ex.: Centro" />
+          </label>
+          <label class="client-picker-field location-field">
             Estado
-            <select id="client-state"></select>
+            <div class="input-with-action">
+              <input id="client-state" readonly placeholder="Selecione o estado" />
+              <button class="action-btn" id="toggle-state-picker" type="button">Buscar</button>
+            </div>
+            <small>Clique para escolher o estado em uma lista organizada.</small>
           </label>
           <label class="client-picker-field">
             Cidade
             <div class="input-with-action">
-              <input id="client-city" list="city-options" placeholder="Digite ou selecione a cidade" />
+              <input id="client-city" placeholder="Digite para buscar a cidade" />
               <button class="action-btn" id="toggle-city-picker" type="button">Buscar</button>
             </div>
-            <datalist id="city-options"></datalist>
+            <small>Digite algumas letras ou clique em Buscar para escolher na lista.</small>
           </label>
         </div>
+        <div class="client-picker-panel" id="state-picker-panel" hidden></div>
         <div class="client-picker-panel" id="city-picker-panel" hidden></div>
         <div class="modal-actions">
           <button class="ghost-btn" id="cancel-client-btn" type="button">Cancelar</button>
